@@ -8,13 +8,21 @@
 
 import UIKit
 
-final class VideoCell: UICollectionViewCell {
+class BaseCell: UICollectionViewCell {
     //every time when i call .dequeueReusableCell -> init!
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
+    func setupViews(){}
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+final class VideoCell: BaseCell {
+ 
    private let thumbnailImageView: UIImageView = {
     let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "teilorSwift")
@@ -56,7 +64,7 @@ final class VideoCell: UICollectionViewCell {
         return textView
     }()
     
-    private func setupViews() {
+    override func setupViews() {
         addSubview(thumbnailImageView)
         addSubview(separatorView)
         addSubview(userProfileImageView)
@@ -73,12 +81,5 @@ final class VideoCell: UICollectionViewCell {
         _ = titleLabel.anchor(thumbnailImageView.bottomAnchor, left: userProfileImageView.rightAnchor, bottom: nil, right: thumbnailImageView.rightAnchor, topConstant: 8, leftConstant: 8, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 20)
         
          _ = subtitleTextView.anchor(titleLabel.bottomAnchor, left: userProfileImageView.rightAnchor, bottom: nil, right: thumbnailImageView.rightAnchor, topConstant: 2, leftConstant: 8, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: 30)
-
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-   
+    } 
 }

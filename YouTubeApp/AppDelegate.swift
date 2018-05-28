@@ -25,6 +25,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
         
+        //Shadow Line between NawBar
+        UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
+            
+        
+        application.statusBarStyle = .lightContent
+        //info "+" viewController Status bar property -> NO
+        
+        let statusBarBackgroundView = UIView()
+        statusBarBackgroundView.backgroundColor = #colorLiteral(red: 0.521568656, green: 0.1098039225, blue: 0.05098039284, alpha: 1)
+        
+        window?.addSubview(statusBarBackgroundView)
+        window?.addConstraintsWithVisualFormat(format: "H:|[v0]|", views: statusBarBackgroundView)
+        window?.addConstraintsWithVisualFormat(format: "V:|[v0(20)]", views: statusBarBackgroundView)
+        
         
        // (rootViewController: ViewController()) without layaut...
         return true
