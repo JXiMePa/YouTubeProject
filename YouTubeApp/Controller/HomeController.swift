@@ -10,7 +10,9 @@ import UIKit
 
 final class HomeController: UICollectionViewController {
 
-   private let menuBar: MenuBar = {
+    private var videos: [Video]?
+    
+    private let menuBar: MenuBar = {
         let mb = MenuBar()
         return mb
     }()
@@ -18,6 +20,8 @@ final class HomeController: UICollectionViewController {
     //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fetchVideos()
         
         navigationItem.title = "Home"
         navigationController?.navigationBar.isTranslucent = false //полупрозрачной(true)
@@ -39,6 +43,43 @@ final class HomeController: UICollectionViewController {
         setupNavBarButtons()
     }
     
+    private func fetchVideos() {
+        
+        let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json")
+        
+        URLSession.shared.dataTask(with: url!) { [unowned self] (data, response , error) in
+            guard error == nil else { print(error!); return }
+            
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
+                    
+                    self.videos = [Video]()
+                    
+                    for dictionary in json as! [[String: AnyObject]] {
+                        let video = Video()
+                        video.title = dictionary["title"] as? String
+                        video.thumbnailImageName = dictionary["thumbnail_image_name"] as? String
+                        video.numberOfViews = dictionary["number_of_views"] as? NSNumber
+                        
+                        let channelDictionary = dictionary["channel"] as! [String: AnyObject]
+                        let channel = Channel()
+                        channel.name = channelDictionary["name"] as? String
+                        channel.profileImageName = channelDictionary["profile_image_name"] as? String
+                        
+                        video.channel = channel
+                        self.videos?.append(video)
+                    }
+                    
+                    DispatchQueue.main.async {
+                    self.collectionView?.reloadData()
+                }
+                    
+                } catch let jsonError {
+                    print(jsonError)
+                }
+            }.resume()
+    }
+    
     private func setupNavBarButtons() {
         let searchImage = #imageLiteral(resourceName: "search_icon").withRenderingMode(.alwaysOriginal)
         let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
@@ -46,15 +87,18 @@ final class HomeController: UICollectionViewController {
         let moreImage = #imageLiteral(resourceName: "nav_more_icon").withRenderingMode(.alwaysOriginal)
         let moreBarButtonItem = UIBarButtonItem(image: moreImage, style: .plain, target: self, action: #selector(handleMore))
         
-        navigationItem.rightBarButtonItems = [searchBarButtonItem, moreBarButtonItem]
+        navigationItem.rightBarButtonItems = [ moreBarButtonItem, searchBarButtonItem]
         
     }
     
-     @objc private func handleSearch() {
+    let settingsLauncher = SettingsLauncher()
+    
+    @objc private func handleSearch() {
         print("handleSearch")
     }
+    
     @objc private func handleMore() {
-        print("handleMore")
+        settingsLauncher.showSettings()
     }
     
     private func setupMenuBar() {
@@ -69,11 +113,13 @@ final class HomeController: UICollectionViewController {
 extension HomeController: UICollectionViewDelegateFlowLayout {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return videos?.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)  
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath) as! VideoCell
+        cell.video = videos?[indexPath.item]
+        
         return cell
     }
     
@@ -83,6 +129,28 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let height = (view.frame.width - 16 - 16) * 9 / 16 // 16/9 - screen
-        return CGSize(width: view.frame.width, height: height + 16 + 8 + 16 + 44)
+        return CGSize(width: view.frame.width, height: height + 16 + 8 + 36 + 44)
     }
 }
+
+///Fake video
+
+//    var videos: [Video] = {
+//        var kanyeChannel = Channel()
+//        kanyeChannel.name = "KanyeVEVO"
+//        kanyeChannel.profileImageName = "kanye_image_profile"
+//
+//       var blankSpaceVideo = Video()
+//        blankSpaceVideo.title = "Taylor Swift - Blank Space"
+//        blankSpaceVideo.thumbnailImageName = "teilorSwift"
+//        blankSpaceVideo.channel = kanyeChannel
+//        blankSpaceVideo.numberOfViews = 1_604_684_607
+//
+//        var bedBloodVideo = Video()
+//        bedBloodVideo.title = "Taylor Swift - Bed Blood featuring Kendring"
+//        bedBloodVideo.thumbnailImageName = "taylor_swift_bad_blood"
+//        bedBloodVideo.channel = kanyeChannel
+//        bedBloodVideo.numberOfViews = 2_604_684_607
+//
+//        return [blankSpaceVideo, bedBloodVideo]
+//    }()
