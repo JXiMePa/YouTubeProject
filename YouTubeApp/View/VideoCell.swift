@@ -8,19 +8,6 @@
 
 import UIKit
 
-class BaseCell: UICollectionViewCell {
-    //every time when i call .dequeueReusableCell -> init!
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
-    }
-    func setupViews(){}
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 final class VideoCell: BaseCell {
     
     var video: Video? {
@@ -32,7 +19,6 @@ final class VideoCell: BaseCell {
             
             let numberFormater = NumberFormatter()
             numberFormater.numberStyle = .decimal
-            
 
             if let chanellName = video?.channel?.name, let numbersOfViews = video?.numberOfViews {
                 subtitleTextView.text = "\(chanellName) ● \(numberFormater.string(from: numbersOfViews)!) \n● 2 years"
@@ -136,6 +122,7 @@ final class CustomImageView: UIImageView {
         imageUrlString = urlString
         image = nil
         
+        //MARK: FIX!!!
 //        if let imageFromCache: UIImage = imageCache.object(forKey: urlString as NSString) {
 //            self.image = imageFromCache
 //            return
