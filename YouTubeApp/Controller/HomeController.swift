@@ -9,12 +9,20 @@
 import UIKit
 
 final class HomeController: UICollectionViewController {
-
+    
     private var videos: [Video]?
+    private let topBarHight: CGFloat = 45.0
     
     private let menuBar: MenuBar = {
         let mb = MenuBar()
         return mb
+    }()
+    
+    private lazy var settingsLauncher: SettingsLauncher = {
+        let lancher = SettingsLauncher()
+        lancher.homeController = self
+        // Strong reference to HomeController ???
+        return lancher
     }()
     
     //MARK: Life Cycle
@@ -44,40 +52,10 @@ final class HomeController: UICollectionViewController {
     }
     
     private func fetchVideos() {
-        
-        let url = URL(string: "https://s3-us-west-2.amazonaws.com/youtubeassets/home.json")
-        
-        URLSession.shared.dataTask(with: url!) { [unowned self] (data, response , error) in
-            guard error == nil else { print(error!); return }
-            
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers)
-                    
-                    self.videos = [Video]()
-                    
-                    for dictionary in json as! [[String: AnyObject]] {
-                        let video = Video()
-                        video.title = dictionary["title"] as? String
-                        video.thumbnailImageName = dictionary["thumbnail_image_name"] as? String
-                        video.numberOfViews = dictionary["number_of_views"] as? NSNumber
-                        
-                        let channelDictionary = dictionary["channel"] as! [String: AnyObject]
-                        let channel = Channel()
-                        channel.name = channelDictionary["name"] as? String
-                        channel.profileImageName = channelDictionary["profile_image_name"] as? String
-                        
-                        video.channel = channel
-                        self.videos?.append(video)
-                    }
-                    
-                    DispatchQueue.main.async {
-                    self.collectionView?.reloadData()
-                }
-                    
-                } catch let jsonError {
-                    print(jsonError)
-                }
-            }.resume()
+        ApiService.sharedInstance.fetchVideos { [unowned self] (videos: [Video]) in
+            self.videos = videos
+            self.collectionView?.reloadData()
+        }  
     }
     
     private func setupNavBarButtons() {
@@ -88,13 +66,23 @@ final class HomeController: UICollectionViewController {
         let moreBarButtonItem = UIBarButtonItem(image: moreImage, style: .plain, target: self, action: #selector(handleMore))
         
         navigationItem.rightBarButtonItems = [ moreBarButtonItem, searchBarButtonItem]
+ 
+    }
+
+    func showControllerForSetting(setting: Setting) {
         
+        let blanckSettingsViewController = UIViewController()
+        blanckSettingsViewController.navigationItem.title = setting.name.rawValue
+        blanckSettingsViewController.view.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0) // navigationBarItems Color Color
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0) ]
+        
+        navigationController?.pushViewController(blanckSettingsViewController, animated: true)
     }
     
-    let settingsLauncher = SettingsLauncher()
-    
     @objc private func handleSearch() {
-        print("handleSearch")
+        print("handleSearch()")
     }
     
     @objc private func handleMore() {
@@ -102,9 +90,21 @@ final class HomeController: UICollectionViewController {
     }
     
     private func setupMenuBar() {
+        navigationController?.hidesBarsOnSwipe = true // swipeToHide
+        
+        let redView: UIView = {
+            let view = UIView()
+            view.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+           return view
+        }()
+        
+        view.addSubview(redView)
         view.addSubview(menuBar)
-        view.addConstraintsWithVisualFormat(format: "H:|[v0]|", views: menuBar)
-        view.addConstraintsWithVisualFormat(format: "V:|[v0(50)]", views: menuBar)
+        
+        _ = redView.anchor(view.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: topBarHight)
+        
+        ///.safeAreaLayoutGuide !
+       _ = menuBar.anchor(view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, topConstant: 0, leftConstant: 0, bottomConstant: 0, rightConstant: 0, widthConstant: 0, heightConstant: topBarHight)
     }
     
 }//end
@@ -134,7 +134,6 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
 }
 
 ///Fake video
-
 //    var videos: [Video] = {
 //        var kanyeChannel = Channel()
 //        kanyeChannel.name = "KanyeVEVO"

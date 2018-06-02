@@ -12,24 +12,17 @@ final class SettingsCell: BaseCell {
     
     override var isHighlighted: Bool  {
         didSet {
-            backgroundColor = isHighlighted ? #colorLiteral(red: 0.4505472716, green: 0.2196840727, blue: 0.2105370472, alpha: 1) : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+            backgroundColor = isHighlighted ? #colorLiteral(red: 0.3019607961, green: 0.2511276917, blue: 0.2491173584, alpha: 1) : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             nameLabel.textColor = isHighlighted ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             iconImageView.tintColor = isHighlighted ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         }
     }
-    override var isSelected: Bool {
-        didSet {
-            backgroundColor = isSelected ? #colorLiteral(red: 0.3161733771, green: 0.3423278247, blue: 0.3803237403, alpha: 1) : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-            nameLabel.textColor = isSelected ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            iconImageView.tintColor = isSelected ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
-        }
-    }
     
     //incapsulation implement
-    var settingsSetValue: Seting? {
+    var settingsSetValue: Setting? {
         didSet {
             if  let text = settingsSetValue?.name {
-               nameLabel.text = text
+                nameLabel.text = text.rawValue
             }
             if let image = settingsSetValue?.image {
                iconImageView.image = image.withRenderingMode(.alwaysTemplate)

@@ -33,10 +33,28 @@ final class MenuBar: UIView {
         //first select Item in collectionView
         let selectedIndexPatch = IndexPath(item: 0, section: 0)
         collectionView.selectItem(at: selectedIndexPatch, animated: false, scrollPosition: .left)
+        
+        setupHorizontalBar()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    var horizontalBarLeftAnchorConstraint: NSLayoutConstraint?
+    
+   private func setupHorizontalBar() {
+    let horizontalBar = UIView()
+    horizontalBar.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+    horizontalBar.translatesAutoresizingMaskIntoConstraints = false
+    addSubview(horizontalBar)
+    
+    horizontalBarLeftAnchorConstraint = horizontalBar.leftAnchor.constraint(equalTo: leftAnchor)
+    horizontalBarLeftAnchorConstraint?.isActive = true
+    horizontalBar.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    horizontalBar.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/4).isActive = true
+    horizontalBar.heightAnchor.constraint(equalToConstant: 4).isActive = true
+
     }
 }
 
@@ -55,6 +73,16 @@ extension MenuBar: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0.0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let x = CGFloat(indexPath.item) * frame.width / 4
+        horizontalBarLeftAnchorConstraint?.constant = x
+        
+        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            //create animate time = 0.75, and update layout
+            self.layoutIfNeeded()
+        }, completion: nil)
     }
 }
 

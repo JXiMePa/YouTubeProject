@@ -8,24 +8,20 @@
 
 import UIKit
 
-//Setings model class
-struct Seting { // NSObject?
-    let name: String
-    let image: UIImage
-}
-
-class SettingsLauncher: NSObject {
+final class SettingsLauncher: NSObject {
     
-    private let blackView = UIView()
+    private let blackView = UIView() //shadow
     private let cellHight: CGFloat = 45.0
     
-    private let settings: [Seting] = {
-        let seting = Seting(name: "Settings", image: #imageLiteral(resourceName: "settings"))
-        let privacy = Seting(name: "Terms & Privacy policy", image: #imageLiteral(resourceName: "privacy"))
-        let feedBeck = Seting(name: "Send FeedBeck", image: #imageLiteral(resourceName: "feedback"))
-        let help = Seting(name: "Help", image: #imageLiteral(resourceName: "help"))
-        let swichAccount = Seting(name: "Swich Account", image: #imageLiteral(resourceName: "switch_account"))
-        let cancel = Seting(name: "Cancel", image: #imageLiteral(resourceName: "cancel"))
+    var homeController: HomeController?
+    
+    private let settings: [Setting] = {
+        let seting = Setting(name: .Setting, image: #imageLiteral(resourceName: "settings"))
+        let privacy = Setting(name: .Privacy, image: #imageLiteral(resourceName: "privacy"))
+        let feedBeck = Setting(name: .FeedBeck, image: #imageLiteral(resourceName: "feedback"))
+        let help = Setting(name: .Help, image: #imageLiteral(resourceName: "help"))
+        let swichAccount = Setting(name: .SwichAccount, image: #imageLiteral(resourceName: "switch_account"))
+        let cancel = Setting(name: .Cancel, image: #imageLiteral(resourceName: "cancel"))
         return [seting, swichAccount, help, feedBeck, privacy, cancel]
     }()
     
@@ -37,19 +33,17 @@ class SettingsLauncher: NSObject {
     }()
     
     @objc func showSettings() {
-        
         if let window = UIApplication.shared.keyWindow {
             blackView.frame = window.frame
             blackView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6500160531)
-            blackView.addGestureRecognizer(UITapGestureRecognizer(
-                target: self, action: #selector(hendleDismiss)))
+            blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
             
             window.addSubview(blackView)
             window.addSubview(collectionView)
             
-            let height:CGFloat = CGFloat(settings.count) * cellHight
-            
+            let height = CGFloat(settings.count) * cellHight
             let y = window.frame.height - height
+            
             collectionView.frame = CGRect(x: 0, y: window.frame.height, width: window.frame.width, height: height)
             blackView.alpha = 0
             
@@ -59,26 +53,33 @@ class SettingsLauncher: NSObject {
                 self.collectionView.frame = CGRect(x: 0, y: y,
                                                    width: self.collectionView.frame.width,
                                                    height: self.collectionView.frame.height)
-                
             }, completion: nil)
-            
         }
     }
-    @objc private func hendleDismiss() {
-        UIView.animate(withDuration: 0.5) {
+    
+    @objc func handleDismiss(_ setting: Setting) {
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+            
             self.blackView.alpha = 0
+            
             if let window = UIApplication.shared.keyWindow {
-                self.collectionView.frame = CGRect(x: 0, y: window.frame.height,
-                                                   width: self.collectionView.frame.width,
-                                                   height: self.collectionView.frame.height)
+                self.collectionView.frame = CGRect(x: 0, y: window.frame.height, width: self.collectionView.frame.width, height: self.collectionView.frame.height)
+            }
+            
+        }) { (completed: Bool) in
+            if setting.name != .Cancel {
+                self.homeController?.showControllerForSetting(setting: setting)
             }
         }
     }
     
     override init() {
         super.init()
+        
         collectionView.dataSource = self
         collectionView.delegate = self
+        
         collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: "cellId")
     }
 }
@@ -103,6 +104,12 @@ extension SettingsLauncher : UICollectionViewDataSource, UICollectionViewDelegat
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let setting = self.settings[indexPath.item]
+        handleDismiss(setting)
     }
 }
 
