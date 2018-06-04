@@ -20,11 +20,11 @@ final class VideoCell: BaseCell {
             let numberFormater = NumberFormatter()
             numberFormater.numberStyle = .decimal
 
-            if let chanellName = video?.channel?.name, let numbersOfViews = video?.numberOfViews {
+            if let chanellName = video?.channel?.name, let numbersOfViews = video?.number_of_views {
                 subtitleTextView.text = "\(chanellName) ● \(numberFormater.string(from: numbersOfViews)!) \n● 2 years"
             }
 
-            if let thumbnailImageName = video?.thumbnailImageName {
+            if let thumbnailImageName = video?.thumbnail_image_name {
                 thumbnailImageView.image = UIImage(named: thumbnailImageName)
             }
         }
@@ -76,14 +76,14 @@ final class VideoCell: BaseCell {
     
     //MARK: FIX...
     private func setupProfileImage() {
-        if let profileImageUrl = video?.channel?.profileImageName {
+        if let profileImageUrl = video?.channel?.profile_image_name {
             
             userProfileImageView.loadImageUsingUrlString(urlString: profileImageUrl)
         }
     }
     
     private func setupThumbnailImage() {
-        if let thumbnailImageUrl = video?.thumbnailImageName {
+        if let thumbnailImageUrl = video?.thumbnail_image_name {
             
             thumbnailImageView.loadImageUsingUrlString(urlString: thumbnailImageUrl)
         }
