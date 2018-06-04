@@ -54,6 +54,5 @@ final class SettingsCell: BaseCell {
         addConstraintsWithVisualFormat(format: "V:|[v0]|", views: nameLabel)
         addConstraintsWithVisualFormat(format: "V:[v0(30)]", views: iconImageView)
         addConstraint(NSLayoutConstraint(item: iconImageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
-
     }
 }

@@ -19,6 +19,10 @@
 		6B6A28C820BAB7CD00D2A688 /* VideoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6A28C720BAB7CD00D2A688 /* VideoCell.swift */; };
 		6B6A28CA20BAEEA000D2A688 /* LayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6A28C920BAEEA000D2A688 /* LayoutConstraint.swift */; };
 		6B98AFE720BC0555001964FB /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B98AFE620BC0555001964FB /* MenuBar.swift */; };
+		6BA95B3220C529BE003F2490 /* TrendingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA95B3120C529BE003F2490 /* TrendingCell.swift */; };
+		6BA95B3420C54F6D003F2490 /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA95B3320C54F6D003F2490 /* SubscriptionCell.swift */; };
+		6BA95B3620C54FF1003F2490 /* AccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA95B3520C54FF1003F2490 /* AccountCell.swift */; };
+		6BBD890B20C2D83100267BEE /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBD890A20C2D83100267BEE /* FeedCell.swift */; };
 		6BBEFD3F20C0116900AFA4FE /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBEFD3E20C0116900AFA4FE /* SettingsCell.swift */; };
 		6BBEFD4120C012B100AFA4FE /* BaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBEFD4020C012B100AFA4FE /* BaseCell.swift */; };
 /* End PBXBuildFile section */
@@ -38,6 +42,10 @@
 		6B6A28C720BAB7CD00D2A688 /* VideoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCell.swift; sourceTree = "<group>"; };
 		6B6A28C920BAEEA000D2A688 /* LayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConstraint.swift; sourceTree = "<group>"; };
 		6B98AFE620BC0555001964FB /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		6BA95B3120C529BE003F2490 /* TrendingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendingCell.swift; sourceTree = "<group>"; };
+		6BA95B3320C54F6D003F2490 /* SubscriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
+		6BA95B3520C54FF1003F2490 /* AccountCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCell.swift; sourceTree = "<group>"; };
+		6BBD890A20C2D83100267BEE /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		6BBEFD3E20C0116900AFA4FE /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		6BBEFD4020C012B100AFA4FE /* BaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,6 +126,10 @@
 				6B6A28C720BAB7CD00D2A688 /* VideoCell.swift */,
 				6B2BA93F20BC1656003EF0ED /* MenuCell.swift */,
 				6BBEFD3E20C0116900AFA4FE /* SettingsCell.swift */,
+				6BBD890A20C2D83100267BEE /* FeedCell.swift */,
+				6BA95B3120C529BE003F2490 /* TrendingCell.swift */,
+				6BA95B3320C54F6D003F2490 /* SubscriptionCell.swift */,
+				6BA95B3520C54FF1003F2490 /* AccountCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -201,14 +213,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BA95B3220C529BE003F2490 /* TrendingCell.swift in Sources */,
 				6B6A28B820BAB17A00D2A688 /* HomeController.swift in Sources */,
 				6B6A28B620BAB17A00D2A688 /* AppDelegate.swift in Sources */,
 				6BBEFD3F20C0116900AFA4FE /* SettingsCell.swift in Sources */,
 				6B2BA94020BC1656003EF0ED /* MenuCell.swift in Sources */,
 				6B6A28C820BAB7CD00D2A688 /* VideoCell.swift in Sources */,
 				6B6A28CA20BAEEA000D2A688 /* LayoutConstraint.swift in Sources */,
+				6BA95B3420C54F6D003F2490 /* SubscriptionCell.swift in Sources */,
 				6B2A2AC320C18677004096AE /* ApiService.swift in Sources */,
+				6BA95B3620C54FF1003F2490 /* AccountCell.swift in Sources */,
 				6B308D7B20BC4B5B00BE287E /* VIdeo.swift in Sources */,
+				6BBD890B20C2D83100267BEE /* FeedCell.swift in Sources */,
 				6B98AFE720BC0555001964FB /* MenuBar.swift in Sources */,
 				6BBEFD4120C012B100AFA4FE /* BaseCell.swift in Sources */,
 				6B2A2AC020C174A9004096AE /* Settings.swift in Sources */,

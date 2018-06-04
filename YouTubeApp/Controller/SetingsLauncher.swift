@@ -25,9 +25,11 @@ final class SettingsLauncher: NSObject {
         return [seting, swichAccount, help, feedBeck, privacy, cancel]
     }()
     
-    private let collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.dataSource = self
+        cv.delegate = self
         cv.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         return cv
     }()
@@ -36,7 +38,8 @@ final class SettingsLauncher: NSObject {
         if let window = UIApplication.shared.keyWindow {
             blackView.frame = window.frame
             blackView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.6500160531)
-            blackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDismiss)))
+            blackView.addGestureRecognizer(UITapGestureRecognizer(target: self,
+                                                                  action: #selector(handleDismiss)))
             
             window.addSubview(blackView)
             window.addSubview(collectionView)
@@ -76,15 +79,10 @@ final class SettingsLauncher: NSObject {
     
     override init() {
         super.init()
-        
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
         collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: "cellId")
     }
 }
 
-//MARK: SettingsLauncher implement
 extension SettingsLauncher : UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -107,7 +105,6 @@ extension SettingsLauncher : UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
         let setting = self.settings[indexPath.item]
         handleDismiss(setting)
     }
