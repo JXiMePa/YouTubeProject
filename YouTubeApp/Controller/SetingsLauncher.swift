@@ -11,7 +11,7 @@ import UIKit
 final class SettingsLauncher: NSObject {
     
     private let blackView = UIView() //shadow
-    private let cellHight: CGFloat = 45.0
+    private let cellHeight: CGFloat = 45.0
     
     var homeController: HomeController?
     
@@ -44,7 +44,7 @@ final class SettingsLauncher: NSObject {
             window.addSubview(blackView)
             window.addSubview(collectionView)
             
-            let height = CGFloat(settings.count) * cellHight
+            let height = CGFloat(settings.count) * cellHeight
             let y = window.frame.height - height
             
             collectionView.frame = CGRect(x: 0, y: window.frame.height, width: window.frame.width, height: height)
@@ -97,7 +97,7 @@ extension SettingsLauncher : UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: cellHight)
+        return CGSize(width: collectionView.frame.width, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

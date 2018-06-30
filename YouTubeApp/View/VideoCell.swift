@@ -19,11 +19,11 @@ final class VideoCell: BaseCell {
             
             let numberFormater = NumberFormatter()
             numberFormater.numberStyle = .decimal
-
+            
             if let chanellName = video?.channel?.name, let numbersOfViews = video?.number_of_views {
                 subtitleTextView.text = "\(chanellName) ● \(numberFormater.string(from: numbersOfViews)!) \n● 2 years"
             }
-
+            
             if let thumbnailImageName = video?.thumbnail_image_name {
                 thumbnailImageView.image = UIImage(named: thumbnailImageName)
             }
@@ -77,28 +77,26 @@ final class VideoCell: BaseCell {
     //MARK: FIX...
     private func setupProfileImage() {
         if let profileImageUrl = video?.channel?.profile_image_name {
-            
-            userProfileImageView.loadImageUsingUrlString(urlString: profileImageUrl)
+            userProfileImageView.loadImageWithUrl(profileImageUrl)
         }
     }
     
     private func setupThumbnailImage() {
         if let thumbnailImageUrl = video?.thumbnail_image_name {
-            
-            thumbnailImageView.loadImageUsingUrlString(urlString: thumbnailImageUrl)
+            thumbnailImageView.loadImageWithUrl(thumbnailImageUrl)
         }
     }
-
+    
     override func setupViews() {
-        addSubview(thumbnailImageView)
         addSubview(separatorView)
         addSubview(userProfileImageView)
+        addSubview(thumbnailImageView)
         addSubview(titleLabel)
         addSubview(subtitleTextView)
         
         //Vertical and Horyzontal Format
         addConstraintsWithVisualFormat(format: "V:|-16-[v0]-8-[v1(44)]-36-[v2(1)]|", views: thumbnailImageView, userProfileImageView, separatorView)
-        addConstraintsWithVisualFormat(format: "H:|-16-[v0]-16-|", views: thumbnailImageView)
+        addConstraintsWithVisualFormat(format: "H:|-10-[v0]-10-|", views: thumbnailImageView)
         addConstraintsWithVisualFormat(format: "H:|[v0]|", views: separatorView)
         addConstraintsWithVisualFormat(format: "H:|-16-[v0(44)]", views: userProfileImageView)
         
@@ -109,39 +107,59 @@ final class VideoCell: BaseCell {
     } 
 }
 
+///----------------------------------------------------------------------------
+var imageCache = NSCache<AnyObject, UIImage>()
 
-var imageCache = NSCache<NSString, UIImage>() {
-    didSet { print("set") } }
-
-final class CustomImageView: UIImageView {
-
-   private var imageUrlString: String? // check to same url
+class CustomImageView: UIImageView {
     
-    func loadImageUsingUrlString(urlString: String) {
-        let url = URL(string: urlString)
-        imageUrlString = urlString
+    var imageURL: URL?
+    
+    let activityIndicator = UIActivityIndicatorView()
+    
+    func loadImageWithUrl(_ urlString: String) {
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        // setup activityIndicator...
+        activityIndicator.color = .red
+        
+        addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        
+        imageURL = url
         image = nil
+        activityIndicator.startAnimating()
         
-        //MARK: FIX!!!
-//        if let imageFromCache: UIImage = imageCache.object(forKey: urlString as NSString) {
+        //       retrieves image if already available in cache
+//        if let imageFromCache = imageCache.object(forKey: urlString as AnyObject) {
 //            self.image = imageFromCache
-//            return
-//        }
+//            activityIndicator.stopAnimating()
+//
+//        } else {
         
-        URLSession.shared.dataTask(with: url!) { [unowned self] (data, response, error) in
-            if error != nil {
-                print(error!)
-                return
-            }
-
-            DispatchQueue.main.async {
-                let imageToCache = UIImage(data: data!)
-                if self.imageUrlString == urlString {
-                   self.image = imageToCache
+            // image does not available in cache.. so retrieving it from url...
+            URLSession.shared.dataTask(with: url, completionHandler: { [weak self] (data, response, error) in
+                
+                if error != nil {
+                    print(error as Any)
+                    // self?.activityIndicator.stopAnimating()
+                    return
                 }
                 
-                imageCache.setObject(imageToCache!, forKey: urlString as NSString)
-            }
-        }.resume()
-    }
+                DispatchQueue.main.async(execute: {
+                    
+                    if let unwrappedData = data, let imageToCache = UIImage(data: unwrappedData) {
+                        
+                        if self?.imageURL == url {
+                            self?.image = imageToCache
+                        }
+                        imageCache.setObject(imageToCache, forKey: urlString as AnyObject)
+                    }
+                    self?.activityIndicator.stopAnimating()
+                })
+            }).resume()
+        }
+   // }
 }

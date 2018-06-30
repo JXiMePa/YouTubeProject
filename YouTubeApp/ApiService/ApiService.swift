@@ -36,11 +36,9 @@ final class ApiService: NSObject {
             do {
                 guard let unwrappedData = data else { return }
                 guard let jsonDictionary = try JSONSerialization.jsonObject(with: unwrappedData, options: .mutableContainers) as? [[String: AnyObject]] else { return }
-
-                let videos = jsonDictionary.map { return Video($0) } //[Video]()
                 
                 DispatchQueue.main.async {
-                    complition(videos)
+                    complition(jsonDictionary.map { return Video($0) }) //[Video]
                 }
             } catch let jsonError {
                 print(jsonError)

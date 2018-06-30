@@ -37,6 +37,8 @@ final class HomeController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         setupNavBar()
         setupCollectionView()
         setupMenuBar()
@@ -104,6 +106,7 @@ final class HomeController: UICollectionViewController {
     }
     
     fileprivate func setTitleForIndex(_ index: Int) {
+        
         if let titleLabel = navigationItem.titleView as? UILabel {
             titleLabel.text = "  " + "\(titles[index])".capitalized
         }

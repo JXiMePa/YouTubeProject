@@ -12,8 +12,13 @@ class FeedCell: BaseCell {
     
     private let videoCellId = "VideoCell"
 
-    var videos: [Video]?
+    var videos: [Video]? {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
     
+    //Vertical cv
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -44,12 +49,18 @@ class FeedCell: BaseCell {
 
 extension FeedCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let videoLanucer = VideoLauncher()
+        videoLanucer.showVideoPlayer()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return videos?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: videoCellId, for: indexPath) as! VideoCell
+        
         cell.video = videos?[indexPath.item]
         return cell
     }
